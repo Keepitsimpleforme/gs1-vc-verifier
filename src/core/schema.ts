@@ -1,9 +1,9 @@
 // validator.ts
 
 import { validator } from '@transmute/verifiable-credentials';
-import { resolver } from './resolver'; // your resolver implementation
+import { resolver } from './resolver';
 
-// Create a single validator instance with your resolver
+// Create a single validator instance with resolver
 const credentialValidator = validator({ resolver });
 
 // Export a reusable validation function

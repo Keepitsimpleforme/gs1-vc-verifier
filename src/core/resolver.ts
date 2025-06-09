@@ -12,10 +12,16 @@ interface ResolverRequest {
   purpose?: string;
 }
 
+interface ResolverResponse {
+  type: string;
+  content: Uint8Array;
+}
+
 export const resolver = {
-  resolve: async (req: ResolverRequest): Promise<PublicKeyWithContentType> => {
+  resolve: async (req: ResolverRequest): Promise<ResolverResponse> => {
     const { id, type, content } = req;
 
+    // Handle verification material
     if (type === "application/vc-ld+jwt" && content) {
       const jwt = transmute.text.decoder.decode(content);
       const { header } = splitJwt(jwt);
@@ -37,6 +43,26 @@ export const resolver = {
       return {
         type: "application/jwk+json",
         content: new TextEncoder().encode(JSON.stringify(verificationMethod.publicKeyJwk))
+      };
+    }
+
+    // Handle schema validation
+    if (type === "application/schema+json" && id) {
+      const schemaResponse = await fetch(id);
+      const schema = await schemaResponse.json();
+      return {
+        type: "application/schema+json",
+        content: new TextEncoder().encode(JSON.stringify(schema))
+      };
+    }
+
+    // Handle status checks
+    if (type === "application/vc-ld+jwt" && id) {
+      const statusListResponse = await fetch(id);
+      const statusListJwt = await statusListResponse.text();
+      return {
+        type: "application/vc-ld+jwt",
+        content: new TextEncoder().encode(statusListJwt)
       };
     }
 

@@ -4,6 +4,7 @@ import { getResolver } from "web-did-resolver";
 import * as transmute from '@transmute/verifiable-credentials';
 import { PublicKeyWithContentType, SupportedKeyFormats } from "@transmute/verifiable-credentials";
 import { splitJwt } from './input';
+import { getdidcacheDocument } from "../cache/cache";
 
 interface ResolverRequest {
   id?: string;
@@ -28,12 +29,11 @@ export const resolver = {
       const kid = header.kid;
       const did = kid.split("#")[0];
 
-      const webResolver = getResolver();
-      const resolver = new Resolver({ ...webResolver });
-      const didDocument = await resolver.resolve(did);
+      
+      const didDocument = await getdidcacheDocument(did);
 
       const verificationMethod = didDocument.didDocument?.verificationMethod?.find(
-        (vm) => vm.id === kid
+        (vm:any) => vm.id === kid
       );
 
       if (!verificationMethod?.publicKeyJwk) {
@@ -49,12 +49,11 @@ export const resolver = {
     // Handle direct JWK requests (e.g., from VC verification)
     if (type === "application/jwk+json" && id) {
       const did = id.split("#")[0];
-      const webResolver = getResolver();
-      const resolver = new Resolver({ ...webResolver });
-      const didDocument = await resolver.resolve(did);
+      
+      const didDocument = await getdidcacheDocument(did);
 
       const verificationMethod = didDocument.didDocument?.verificationMethod?.find(
-        (vm) => vm.id === id
+        (vm:any) => vm.id === id
       );
 
       if (!verificationMethod?.publicKeyJwk) {

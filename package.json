@@ -14,9 +14,11 @@
   "description": "GS1 and W3C compliant Verifiable Credential and Presentation verifier",
   "dependencies": {
     "@transmute/verifiable-credentials": "^0.3.4",
+    "async-mutex": "^0.5.0",
     "base64url": "^3.0.1",
     "did-resolver": "^4.1.0",
     "jose": "^5.2.2",
+    "lru-cache": "^11.1.0",
     "web-did-resolver": "^2.0.30"
   },
   "devDependencies": {

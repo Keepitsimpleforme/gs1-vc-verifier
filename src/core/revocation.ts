@@ -3,8 +3,8 @@ import { inputJWT } from "../test/test";
 import * as transmute from '@transmute/verifiable-credentials';
 import { StatusList } from '../utils/statusList/StatusList';
 
-export async function checkRevocationStatus() {
-  const decodedJWT = splitJwt(inputJWT);
+export async function checkRevocationStatus(vc: any): Promise<boolean> {
+  const decodedJWT = splitJwt(vc);
   const payload = decodedJWT.payload;
 
   // Check if credential has status information
@@ -27,19 +27,15 @@ export async function checkRevocationStatus() {
           position: parseInt(status.statusListIndex),
         });
 
-        if (isRevoked) {
-          console.log('Credential is revoked');
-        } else {
-          console.log('Credential is valid');
-        }
+        return isRevoked;
       } catch (error) {
         console.error('Error checking revocation status:', error);
+        return false;
       }
     }
-  } else {
-    console.log('Credential has no status information');
   }
+  return false;
 }
 
 // Execute the function
-checkRevocationStatus().catch(console.error);
+checkRevocationStatus(inputJWT).then(console.log).catch(console.error);

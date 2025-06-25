@@ -1,5 +1,8 @@
 import base64url from "base64url";
 export function splitJwt(jwt: string) {
+  if (typeof jwt !== "string") {
+    throw new Error("splitJwt expects a string JWT, got: " + typeof jwt);
+  }
   const [headerB64, payloadB64, signatureB64] = jwt.split(".");
 
   // Decoded header and payload from base64url

@@ -1,10 +1,10 @@
 // validator.ts
 
 import { validator } from '@transmute/verifiable-credentials';
-import { resolver } from './resolver';
+import { resolverNoCache } from './resolver';
 
 // Create a single validator instance with resolver
-const credentialValidator = validator({ resolver });
+const credentialValidator = validator({ resolver:resolverNoCache });
 
 // Export a reusable validation function
 export async function validateCredential(jwtVc: string) {
